@@ -39,6 +39,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Only try to get session if we have real Supabase config
     if (!hasSupabaseConfig) {
+      // Load mock user from localStorage
+      const mockUser = localStorage.getItem('mockUser')
+      const mockProfile = localStorage.getItem('mockProfile')
+      
+      if (mockUser && mockProfile) {
+        setUser(JSON.parse(mockUser))
+        setProfile(JSON.parse(mockProfile))
+      }
+      
       setLoading(false)
       return
     }
@@ -103,6 +112,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    if (!hasSupabaseConfig) {
+      // Mock authentication for demo
+      const mockUser = {
+        id: `mock-${Date.now()}`,
+        email,
+        created_at: new Date().toISOString(),
+        app_metadata: {},
+        user_metadata: { full_name: fullName },
+        aud: 'authenticated',
+        confirmation_sent_at: new Date().toISOString()
+      } as User
+
+      const mockProfile = {
+        id: mockUser.id,
+        email,
+        full_name: fullName || null,
+        avatar_url: null,
+        role: 'user' as const,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+
+      // Store user in mock database
+      const existingUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]')
+      const newUser = {
+        id: mockUser.id,
+        email,
+        password, // In real app, this would be hashed
+        full_name: fullName,
+        created_at: mockUser.created_at
+      }
+      existingUsers.push(newUser)
+      localStorage.setItem('mockUsers', JSON.stringify(existingUsers))
+
+      setUser(mockUser)
+      setProfile(mockProfile)
+      localStorage.setItem('mockUser', JSON.stringify(mockUser))
+      localStorage.setItem('mockProfile', JSON.stringify(mockProfile))
+      return
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -130,6 +180,47 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   const signIn = async (email: string, password: string) => {
+    if (!hasSupabaseConfig) {
+      // Mock authentication for demo
+      // Check if user exists in localStorage
+      const existingUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]')
+      const existingUser = existingUsers.find((u: any) => u.email === email)
+      
+      if (!existingUser) {
+        throw new Error('User not found. Please sign up first.')
+      }
+      
+      if (existingUser.password !== password) {
+        throw new Error('Invalid password')
+      }
+
+      const mockUser = {
+        id: existingUser.id,
+        email: existingUser.email,
+        created_at: existingUser.created_at,
+        app_metadata: {},
+        user_metadata: { full_name: existingUser.full_name },
+        aud: 'authenticated',
+        confirmation_sent_at: existingUser.created_at
+      } as User
+
+      const mockProfile = {
+        id: existingUser.id,
+        email: existingUser.email,
+        full_name: existingUser.full_name,
+        avatar_url: null,
+        role: 'user' as const,
+        created_at: existingUser.created_at,
+        updated_at: new Date().toISOString()
+      }
+
+      setUser(mockUser)
+      setProfile(mockProfile)
+      localStorage.setItem('mockUser', JSON.stringify(mockUser))
+      localStorage.setItem('mockProfile', JSON.stringify(mockProfile))
+      return
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -139,6 +230,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   const signOut = async () => {
+    if (!hasSupabaseConfig) {
+      // Mock sign out
+      setUser(null)
+      setProfile(null)
+      localStorage.removeItem('mockUser')
+      localStorage.removeItem('mockProfile')
+      return
+    }
+
     const { error } = await supabase.auth.signOut()
     if (error) throw error
   }
