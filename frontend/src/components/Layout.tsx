@@ -22,17 +22,18 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('darkMode') === 'true'
-    }
-    return false
-  })
+  const [isDarkMode, setIsDarkMode] = useState(false) // Start with light mode by default
   const { user, profile, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
-  // Apply dark mode on component mount
+  // Load dark mode preference from localStorage on mount
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true'
+    setIsDarkMode(savedDarkMode)
+  }, [])
+
+  // Apply dark mode on component mount and when it changes
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark')
@@ -115,8 +116,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <button
                   onClick={toggleDarkMode}
                   className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 >
-                  {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  {isDarkMode ? (
+                    <Sun className="h-5 w-5 text-yellow-500" />
+                  ) : (
+                    <Moon className="h-5 w-5 text-gray-600" />
+                  )}
                 </button>
 
                 {/* User menu */}
