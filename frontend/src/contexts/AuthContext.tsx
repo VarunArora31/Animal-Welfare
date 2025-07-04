@@ -37,21 +37,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Only try to get session if we have real Supabase config
+    // Completely separate mock auth from Supabase
     if (!hasSupabaseConfig) {
+      console.log('Using mock authentication (Supabase not configured)')
+      
       // Load mock user from localStorage
       const mockUser = localStorage.getItem('mockUser')
       const mockProfile = localStorage.getItem('mockProfile')
       
       if (mockUser && mockProfile) {
-        setUser(JSON.parse(mockUser))
-        setProfile(JSON.parse(mockProfile))
+        try {
+          setUser(JSON.parse(mockUser))
+          setProfile(JSON.parse(mockProfile))
+        } catch (error) {
+          console.warn('Error loading mock user:', error)
+          // Clear corrupted data
+          localStorage.removeItem('mockUser')
+          localStorage.removeItem('mockProfile')
+        }
       }
       
       setLoading(false)
-      return
+      return // Exit early - don't try any Supabase calls
     }
 
+    // Only run Supabase code if we have proper configuration
+    console.log('Using real Supabase authentication')
+    
     // Get initial session
     const getSession = async () => {
       try {
@@ -66,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           await fetchProfile(session.user.id)
         }
       } catch (error) {
-        console.warn('Supabase not configured:', error)
+        console.error('Supabase session error:', error)
       }
       setLoading(false)
     }
@@ -74,25 +86,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     getSession()
 
     // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
+    let subscription: any = null
+    
+    try {
+      const authListener = supabase.auth.onAuthStateChange(async (_, session) => {
+        setSession(session)
+        setUser(session?.user ?? null)
 
-      if (session?.user) {
-        await fetchProfile(session.user.id)
-      } else {
-        setProfile(null)
+        if (session?.user) {
+          await fetchProfile(session.user.id)
+        } else {
+          setProfile(null)
+        }
+
+        setLoading(false)
+      })
+      subscription = authListener.data.subscription
+    } catch (error) {
+      console.error('Supabase auth listener error:', error)
+    }
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe()
       }
-
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
+    }
   }, [])
 
   const fetchProfile = async (userId: string) => {
+    if (!hasSupabaseConfig) {
+      // Mock profile is already loaded, no need to fetch
+      return
+    }
+    
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -245,6 +271,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) throw new Error('No user logged in')
+
+    if (!hasSupabaseConfig) {
+      // Mock profile update
+      if (!profile) return
+      const updatedProfile = { ...profile, ...updates } as Profile
+      setProfile(updatedProfile)
+      localStorage.setItem('mockProfile', JSON.stringify(updatedProfile))
+      return
+    }
 
     const { error } = await supabase
       .from('profiles')
