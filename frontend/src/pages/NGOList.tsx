@@ -129,11 +129,17 @@ export const NGOList = () => {
                 </div>
                 
                 <div className="flex gap-2">
-                  <button className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                  <button 
+                    onClick={() => window.open(`tel:${ngo.phone}`, '_self')}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  >
                     Donate
                   </button>
-                  <button className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    Contact
+                  <button 
+                    onClick={() => window.open(`tel:${ngo.phone}`, '_self')}
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Call Now
                   </button>
                 </div>
               </div>

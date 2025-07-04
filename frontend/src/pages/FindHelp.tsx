@@ -4,6 +4,32 @@ import { MapPin, Search, Phone, Clock, Star } from 'lucide-react'
 export const FindHelp = () => {
   const [searchType, setSearchType] = useState<'ngo' | 'vet'>('ngo')
   const [location, setLocation] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+
+  const handleSearch = async () => {
+    setIsSearching(true)
+    // Simulate search
+    setTimeout(() => {
+      setIsSearching(false)
+      alert(`Searching for ${searchType === 'ngo' ? 'NGOs' : 'Veterinarians'} near "${location || 'your location'}"...`)
+    }, 1000)
+  }
+
+  const handleUseCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation(`${position.coords.latitude}, ${position.coords.longitude}`)
+          alert('Location detected! In a real app, this would show nearby services.')
+        },
+        (_error) => {
+          alert('Could not get your location. Please enter manually.')
+        }
+      )
+    } else {
+      alert('Geolocation is not supported by your browser.')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -67,14 +93,21 @@ export const FindHelp = () => {
             </div>
 
             <div className="flex items-end">
-              <button className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center gap-2">
+              <button 
+                onClick={handleSearch}
+                disabled={isSearching}
+                className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+              >
                 <Search className="h-5 w-5" />
-                Search
+                {isSearching ? 'Searching...' : 'Search'}
               </button>
             </div>
           </div>
 
-          <button className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium flex items-center gap-1">
+          <button 
+            onClick={handleUseCurrentLocation}
+            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium flex items-center gap-1"
+          >
             <MapPin className="h-4 w-4" />
             Use my current location
           </button>
@@ -130,11 +163,17 @@ export const FindHelp = () => {
                 </div>
                 
                 <div className="flex gap-2">
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center gap-1">
+                  <button 
+                    onClick={() => window.open(`tel:+91-${9900000000 + item}`, '_self')}
+                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center gap-1"
+                  >
                     <Phone className="h-4 w-4" />
                     Call Now
                   </button>
-                  <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                  <button 
+                    onClick={() => alert(`Showing details for ${searchType === 'ngo' ? 'NGO' : 'Veterinary Clinic'} ${item}`)}
+                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
                     View Details
                   </button>
                 </div>

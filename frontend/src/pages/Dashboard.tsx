@@ -15,7 +15,7 @@ export const Dashboard = () => {
   const { user, profile } = useAuth()
 
   const stats = [
-    { name: 'Total Donations', value: '$250', icon: DollarSign, change: '+12%' },
+    { name: 'Total Donations', value: '₹5,000', icon: DollarSign, change: '+12%' },
     { name: 'NGOs Supported', value: '3', icon: Building2, change: '+1' },
     { name: 'Emergency Chats', value: '7', icon: MessageCircle, change: '+2' },
     { name: 'Animals Helped', value: '15', icon: Heart, change: '+5' }

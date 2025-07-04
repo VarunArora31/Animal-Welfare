@@ -5,7 +5,7 @@ export const Donate = () => {
   const [amount, setAmount] = useState('')
   const [donationType, setDonationType] = useState<'general' | 'ngo'>('general')
 
-  const presetAmounts = [10, 25, 50, 100, 250, 500]
+  const presetAmounts = [100, 500, 1000, 2000, 5000, 10000]
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
@@ -78,7 +78,7 @@ export const Donate = () => {
                       : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-red-300'
                   }`}
                 >
-                  ${preset}
+                  ₹{preset}
                 </button>
               ))}
             </div>
@@ -167,16 +167,16 @@ export const Donate = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">Donation Amount:</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">${amount}</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">₹{amount}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">Processing Fee:</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">$0.00</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">₹0.00</span>
                 </div>
                 <hr className="border-gray-200 dark:border-gray-600" />
                 <div className="flex justify-between text-lg">
                   <span className="font-semibold text-gray-900 dark:text-white">Total:</span>
-                  <span className="font-bold text-red-600 dark:text-red-400">${amount}</span>
+                  <span className="font-bold text-red-600 dark:text-red-400">₹{amount}</span>
                 </div>
               </div>
             </div>
@@ -185,6 +185,10 @@ export const Donate = () => {
           {/* Submit Button */}
           <button
             disabled={!amount}
+            onClick={() => {
+              if (!amount) return
+              alert(`Processing donation of ₹${amount}. In a real app, this would integrate with Razorpay/Stripe payment gateway.`)
+            }}
             className="w-full py-4 px-6 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
             <Heart className="h-5 w-5" />
