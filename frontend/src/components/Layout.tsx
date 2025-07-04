@@ -12,7 +12,6 @@ import {
   MessageCircle, 
   LayoutDashboard,
   LogOut,
-  User,
   Moon,
   Sun
 } from 'lucide-react'
@@ -50,9 +49,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Emergency Chat', href: '/emergency-chat', icon: MessageCircle },
   ]
 
-  const userNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  ]
 
   return (
     <div className={`min-h-screen ${isDarkMode ? 'dark' : ''}`}>

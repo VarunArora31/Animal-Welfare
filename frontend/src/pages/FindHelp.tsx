@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapPin, Search, Filter, Phone, Clock, Star } from 'lucide-react'
+import { MapPin, Search, Phone, Clock, Star } from 'lucide-react'
 
 export const FindHelp = () => {
   const [searchType, setSearchType] = useState<'ngo' | 'vet'>('ngo')

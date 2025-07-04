@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MessageCircle, Send, AlertTriangle, Phone, MapPin, Clock } from 'lucide-react'
+import { MessageCircle, Send, AlertTriangle, Phone, MapPin } from 'lucide-react'
 
 export const EmergencyChat = () => {
   const [message, setMessage] = useState('')

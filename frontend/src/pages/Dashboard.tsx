@@ -7,7 +7,6 @@ import {
   MessageCircle, 
   Settings,
   Bell,
-  Calendar,
   TrendingUp,
   Award
 } from 'lucide-react'

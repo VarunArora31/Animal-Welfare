@@ -6,10 +6,7 @@ import {
   DollarSign, 
   Building2, 
   MessageCircle, 
-  Shield,
-  Users,
-  MapPin,
-  Clock
+  MapPin
 } from 'lucide-react'
 
 export const Home = () => {
