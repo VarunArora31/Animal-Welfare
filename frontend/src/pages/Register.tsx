@@ -45,9 +45,16 @@ export const Register = () => {
     }
 
     try {
+      console.log('Attempting sign up with:', {
+        email: formData.email,
+        fullName: formData.fullName,
+        passwordLength: formData.password.length
+      })
       await signUp(formData.email, formData.password, formData.fullName)
+      console.log('Sign up successful, navigating to dashboard')
       navigate('/dashboard')
     } catch (error: any) {
+      console.error('Sign up error:', error)
       setError(error.message || 'Failed to create account')
     } finally {
       setLoading(false)

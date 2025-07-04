@@ -140,6 +140,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signUp = async (email: string, password: string, fullName?: string) => {
     if (!hasSupabaseConfig) {
       // Mock authentication for demo
+      console.log('Mock sign up attempt for:', email)
+      
+      // Check if user already exists
+      const existingUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]')
+      const existingUser = existingUsers.find((u: any) => u.email === email)
+      
+      if (existingUser) {
+        throw new Error('User with this email already exists')
+      }
+      
       const mockUser = {
         id: `mock-${Date.now()}`,
         email,
@@ -161,7 +171,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       // Store user in mock database
-      const existingUsers = JSON.parse(localStorage.getItem('mockUsers') || '[]')
       const newUser = {
         id: mockUser.id,
         email,
@@ -172,10 +181,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       existingUsers.push(newUser)
       localStorage.setItem('mockUsers', JSON.stringify(existingUsers))
 
+      console.log('Setting mock user and profile:', { mockUser, mockProfile })
       setUser(mockUser)
       setProfile(mockProfile)
       localStorage.setItem('mockUser', JSON.stringify(mockUser))
       localStorage.setItem('mockProfile', JSON.stringify(mockProfile))
+      console.log('Mock sign up successful for:', email)
       return
     }
 
