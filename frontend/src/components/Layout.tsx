@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { Link, useLocation } from 'react-router-dom'
 import { 
   Heart, 
   Menu, 
   X, 
   Home, 
-  Search, 
-  DollarSign, 
   Building2, 
-  MessageCircle, 
-  LayoutDashboard,
-  LogOut,
+  Bot,
   Moon,
   Sun
 } from 'lucide-react'
@@ -22,10 +17,8 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false) // Start with light mode by default
-  const { user, profile, signOut } = useAuth()
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const location = useLocation()
-  const navigate = useNavigate()
 
   // Load dark mode preference from localStorage on mount
   useEffect(() => {
@@ -54,21 +47,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     }
   }
 
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      navigate('/')
-    } catch (error) {
-      console.error('Error signing out:', error)
-    }
-  }
-
   const navigation = [
     { name: 'Home', href: '/', icon: Home },
-    { name: 'Find Help', href: '/find-help', icon: Search },
-    { name: 'Donate', href: '/donate', icon: DollarSign },
-    { name: 'NGOs', href: '/ngos', icon: Building2 },
-    { name: 'Emergency Chat', href: '/emergency-chat', icon: MessageCircle },
+    { name: 'NGO Directory', href: '/ngos', icon: Building2 },
+    { name: 'AI Animal Help', href: '/ai-help', icon: Bot },
   ]
 
 
@@ -125,55 +107,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   )}
                 </button>
 
-                {/* User menu */}
-                {user ? (
-                  <div className="relative">
-                    <div className="flex items-center space-x-3">
-                      {/* Dashboard link for desktop */}
-                      <Link
-                        to="/dashboard"
-                        className="hidden md:flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                      >
-                        <LayoutDashboard className="h-4 w-4" />
-                        <span>Dashboard</span>
-                      </Link>
-
-                      <div className="flex items-center space-x-2">
-                        <div className="hidden md:block">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
-                            {profile?.full_name || user.email}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                            {profile?.role || 'user'}
-                          </p>
-                        </div>
-                        <button
-                          onClick={handleSignOut}
-                          className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                        >
-                          <LogOut className="h-4 w-4" />
-                          <span className="hidden md:inline">Sign Out</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <Link
-                      to="/login"
-                      className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      to="/register"
-                      className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors"
-                    >
-                      Sign Up
-                    </Link>
-                  </div>
-                )}
-
                 {/* Mobile menu button */}
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -207,20 +140,6 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Link>
                   )
                 })}
-
-                {user && (
-                  <>
-                    <hr className="my-2 border-gray-200 dark:border-gray-700" />
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                    >
-                      <LayoutDashboard className="h-5 w-5" />
-                      <span>Dashboard</span>
-                    </Link>
-                  </>
-                )}
               </div>
             </div>
           )}

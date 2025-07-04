@@ -1,53 +1,36 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
 import { 
   Heart, 
-  Search, 
-  DollarSign, 
   Building2, 
-  MessageCircle, 
-  MapPin
+  Bot,
+  MapPin,
+  Clock,
+  Users
 } from 'lucide-react'
 
 export const Home = () => {
-  const { user } = useAuth()
-
   const features = [
     {
-      name: 'Find Nearby Help',
-      description: 'Locate NGOs and veterinary services near you with our geolocation-based search.',
-      icon: MapPin,
-      href: '/find-help',
+      name: 'NGO Directory',
+      description: 'Discover verified animal welfare organizations and connect with them.',
+      icon: Building2,
+      href: '/ngos',
       color: 'bg-blue-500'
     },
     {
-      name: 'Make a Donation',
-      description: 'Support animal welfare organizations with secure online donations.',
-      icon: DollarSign,
-      href: '/donate',
+      name: 'AI Animal Help',
+      description: 'Get immediate AI-powered guidance for animal care and emergencies.',
+      icon: Bot,
+      href: '/ai-help',
       color: 'bg-green-500'
-    },
-    {
-      name: 'Browse NGOs',
-      description: 'Discover verified animal welfare organizations and their work.',
-      icon: Building2,
-      href: '/ngos',
-      color: 'bg-purple-500'
-    },
-    {
-      name: 'Emergency Chat',
-      description: 'Get immediate AI-powered assistance for animal emergencies.',
-      icon: MessageCircle,
-      href: '/emergency-chat',
-      color: 'bg-red-500'
     }
   ]
 
   const stats = [
     { name: 'Animals Helped', value: '10,000+' },
     { name: 'Partner NGOs', value: '500+' },
-    { name: 'Veterinarians', value: '1,200+' },
-    { name: 'Donations Raised', value: '$2M+' }
+    { name: 'AI Consultations', value: '25,000+' },
+    { name: 'Cities Covered', value: '100+' }
   ]
 
   return (
@@ -71,28 +54,19 @@ export const Home = () => {
               for animals in need. Your compassion can make a difference.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {user ? (
-                <Link
-                  to="/find-help"
-                  className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
-                >
-                  <Search className="mr-2 h-5 w-5" />
-                  Find Help Now
-                </Link>
-              ) : (
-                <Link
-                  to="/register"
-                  className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
-                >
-                  Get Started
-                </Link>
-              )}
               <Link
-                to="/emergency-chat"
+                to="/ngos"
+                className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
+              >
+                <Building2 className="mr-2 h-5 w-5" />
+                Browse NGOs
+              </Link>
+              <Link
+                to="/ai-help"
                 className="inline-flex items-center px-8 py-4 border-2 border-red-600 text-lg font-medium rounded-md text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
-                <MessageCircle className="mr-2 h-5 w-5" />
-                Emergency Help
+                <Bot className="mr-2 h-5 w-5" />
+                Get AI Help
               </Link>
             </div>
           </div>
@@ -111,7 +85,7 @@ export const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {features.map((feature) => {
               const Icon = feature.icon
               return (
@@ -166,18 +140,18 @@ export const Home = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/donate"
+                to="/ngos"
                 className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors"
               >
-                <DollarSign className="mr-2 h-5 w-5" />
-                Donate Now
+                <Building2 className="mr-2 h-5 w-5" />
+                Explore NGOs
               </Link>
               <Link
-                to="/ngos"
+                to="/ai-help"
                 className="inline-flex items-center px-8 py-4 border-2 border-red-600 text-lg font-medium rounded-md text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
               >
-                <Building2 className="mr-2 h-5 w-5" />
-                Find NGOs
+                <Bot className="mr-2 h-5 w-5" />
+                Try AI Assistant
               </Link>
             </div>
           </div>
